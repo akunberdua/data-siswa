@@ -138,3 +138,4 @@ export function compressImage(file, maxWidth = 1200, maxHeight = 900, quality = 
     reader.readAsDataURL(file);
   });
 }
+

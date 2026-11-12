@@ -4,7 +4,6 @@ import { api } from '../services/api';
 import ImageUploader from '../components/ImageUploader';
 import {
   User,
-  Home,
   Camera,
   Users,
   DollarSign,
@@ -1125,3 +1124,4 @@ export default function StudentDashboard() {
     </div>
   );
 }
+

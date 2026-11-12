@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import {
   ShieldCheck,
   Search,
-  Filter,
   Users,
   Home,
   CheckCircle,
   AlertTriangle,
-  Clock,
   Printer,
   Download,
   Eye,
@@ -23,11 +21,10 @@ import {
   Sparkles,
   RefreshCw,
   X,
-  FileText,
 } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const { user, isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const [students, setStudents] = useState([]);
@@ -63,31 +60,43 @@ export default function AdminDashboard() {
     }
   }, [isAuthenticated, isAdmin, navigate]);
 
-  const fetchStudents = async () => {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const fetchStudents = useCallback(() => {
+    setRefreshKey((k) => k + 1);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
     if (!isAdmin) return;
-    try {
-      setLoading(true);
-      const res = await api.admin.getStudents({
+
+    setLoading(true);
+    api.admin
+      .getStudents({
         search,
         kategoriEkonomi,
         statusOrangTua,
         statusVerifikasi,
         statusBantuan,
+      })
+      .then((res) => {
+        if (isMounted) {
+          setStudents(res.students || []);
+          setStats(res.stats || null);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          console.error('Failed to load students:', err);
+          setLoading(false);
+        }
       });
-      setStudents(res.students || []);
-      setStats(res.stats || null);
-    } catch (err) {
-      console.error('Failed to load students:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  useEffect(() => {
-    if (isAdmin) {
-      fetchStudents();
-    }
-  }, [search, kategoriEkonomi, statusOrangTua, statusVerifikasi, statusBantuan, isAdmin]);
+    return () => {
+      isMounted = false;
+    };
+  }, [isAdmin, search, kategoriEkonomi, statusOrangTua, statusVerifikasi, statusBantuan, refreshKey]);
 
   const handleOpenDetail = (student) => {
     setSelectedStudent(student);
@@ -970,3 +979,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

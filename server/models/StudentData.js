@@ -177,3 +177,4 @@ studentDataSchema.methods.calculateEconomicCategory = function () {
 
 module.exports =
   mongoose.models.StudentData || mongoose.model('StudentData', studentDataSchema);
+
