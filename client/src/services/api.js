@@ -30,15 +30,28 @@ async function request(endpoint, options = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers,
+    });
+  } catch (netErr) {
+    throw new Error(
+      'Tidak dapat terhubung ke server backend. Pastikan server backend sedang aktif (jalankan "npm run dev").'
+    );
+  }
 
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const error = new Error(data.message || 'Terjadi kesalahan pada server');
+    const errorMsg =
+      data.message ||
+      data.error ||
+      (response.status === 503 || response.status === 502 || response.status === 500
+        ? 'Server backend (port 5000) belum merespons. Pastikan server telah dijalankan.'
+        : `Terjadi kesalahan (Kode: ${response.status})`);
+    const error = new Error(errorMsg);
     error.status = response.status;
     error.data = data;
     throw error;
