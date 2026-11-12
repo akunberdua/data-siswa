@@ -51,11 +51,23 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'SIPENDIK API is active and running',
+    timestamp: new Date().toISOString(),
+  });
+});
 
-// Mount Routes
+// Mount Routes (didukung dengan prefix /api maupun langsung)
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/student', studentRoutes);
+app.use('/student', studentRoutes);
+
 app.use('/api/admin', adminRoutes);
+app.use('/admin', adminRoutes);
 
 // 404 handler for unknown routes
 app.use((req, res) => {
