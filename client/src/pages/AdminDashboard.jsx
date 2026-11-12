@@ -235,7 +235,7 @@ export default function AdminDashboard() {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap' }}>
+          <div className="admin-header-actions">
             <button onClick={fetchStudents} className="btn btn-secondary btn-sm" title="Muat Ulang Data">
               <RefreshCw size={15} /> Refresh
             </button>
@@ -308,7 +308,7 @@ export default function AdminDashboard() {
       <div className="card no-print" style={{ marginBottom: '1.5rem', padding: '1.25rem' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {/* Baris 1: Search & View Switcher */}
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <div className="admin-search-bar">
             <div style={{ position: 'relative', flex: 1 }}>
               <Search
                 size={18}
@@ -324,7 +324,7 @@ export default function AdminDashboard() {
               />
             </div>
 
-            <div style={{ display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '3px' }}>
+            <div className="view-mode-toggle" style={{ display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '3px' }}>
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
@@ -347,7 +347,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Baris 2: Dropdown Filters */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
+          <div className="admin-filters-grid">
             <div>
               <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
                 Status Ekonomi:
@@ -435,7 +435,7 @@ export default function AdminDashboard() {
         </div>
       ) : viewMode === 'grid' ? (
         /* GRID CARD VIEW */
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
+        <div className="admin-student-grid">
           {students.map((student) => {
             const kategori = student.kondisiEkonomi?.kategoriEkonomi || 'Belum Ditentukan';
             const statusOrtu = student.kondisiKeluarga?.statusOrangTua || 'Lengkap';
@@ -811,7 +811,7 @@ export default function AdminDashboard() {
 
               {/* Data Alamat */}
               <div style={{ marginBottom: '1.5rem', background: '#f8fafc', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <MapPin size={16} color="var(--primary)" /> Alamat Tempat Tinggal Saat Ini
                   </h4>
@@ -835,7 +835,7 @@ export default function AdminDashboard() {
               </div>
 
               {/* Data Keluarga & Kondisi Orang Tua */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div className="modal-details-grid">
                 <div style={{ background: '#ffffff', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
                   <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.75rem' }}>
                     <Users size={16} color="var(--primary)" /> Kondisi Orang Tua & Keluarga

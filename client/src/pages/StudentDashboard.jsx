@@ -150,7 +150,7 @@ export default function StudentDashboard() {
 
   const handleGetCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('Browser Anda tidak mendukung deteksi lokasi otomatis.');
+      alert('Browser Anda tidak mendukung deteksi lokasi otomatis. Anda dapat memasukkan link Google Maps secara manual.');
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -164,12 +164,18 @@ export default function StudentDashboard() {
             googleMapsUrl: gmapsLink,
           },
         }));
-        setSuccessMsg('Titik koordinat berhasil didapatkan dari GPS Anda!');
+        setSuccessMsg('Titik koordinat berhasil didapatkan dari GPS perangkat Anda!');
         setTimeout(() => setSuccessMsg(''), 4000);
       },
       (err) => {
-        alert('Gagal mengambil lokasi: ' + err.message);
-      }
+        let msg = 'Gagal mengambil lokasi GPS: ';
+        if (err.code === 1) msg += 'Izin akses lokasi ditolak.';
+        else if (err.code === 2) msg += 'Posisi GPS tidak tersedia.';
+        else if (err.code === 3) msg += 'Waktu permintaan lokasi habis.';
+        else msg += err.message;
+        alert(msg + '\n\nTips: Anda dapat membuka aplikasi Google Maps, menyalin tautan/koordinat rumah Anda, lalu menempelkannya di kolom Link Google Maps.');
+      },
+      { timeout: 10000, enableHighAccuracy: true }
     );
   };
 
@@ -228,20 +234,20 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="container" style={{ padding: '2rem 1.25rem 4rem' }}>
+    <div className="container" style={{ padding: '1.5rem 0.875rem 4rem' }}>
       {/* Header Banner */}
       <div
         className="card"
         style={{
           background: 'linear-gradient(135deg, #1e293b, #0f172a)',
           color: 'white',
-          marginBottom: '1.75rem',
+          marginBottom: '1.5rem',
           border: 'none',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+          <div style={{ flex: '1 1 280px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem', flexWrap: 'wrap' }}>
               <span className="badge badge-primary" style={{ background: 'rgba(37, 99, 235, 0.25)', color: '#93c5fd', border: 'none' }}>
                 <User size={13} /> NISN: {formData.nisn}
               </span>
@@ -261,15 +267,15 @@ export default function StudentDashboard() {
                 </span>
               )}
             </div>
-            <h1 style={{ fontSize: '1.75rem', fontWeight: 800 }}>
+            <h1 style={{ fontSize: 'clamp(1.35rem, 4vw, 1.75rem)', fontWeight: 800 }}>
               Halo, {formData.nama || 'Siswa'}!
             </h1>
-            <p style={{ fontSize: '0.875rem', color: '#94a3b8', maxWidth: '600px', marginTop: '0.25rem' }}>
+            <p style={{ fontSize: '0.8125rem', color: '#94a3b8', maxWidth: '600px', marginTop: '0.25rem' }}>
               Silakan lengkapi formulir di bawah ini dengan data kondisi keluarga, ekonomi orang tua, alamat tempat tinggal saat ini, dan unggah foto tampak depan rumah terbaru.
             </p>
           </div>
 
-          <div style={{ textAlign: 'right', minWidth: '180px' }}>
+          <div style={{ minWidth: '150px', flex: '0 1 auto' }}>
             <div style={{ fontSize: '0.75rem', color: '#cbd5e1', marginBottom: '0.25rem' }}>
               Kelengkapan Berkas
             </div>
@@ -279,6 +285,7 @@ export default function StudentDashboard() {
             <div
               style={{
                 width: '100%',
+                minWidth: '130px',
                 height: '8px',
                 background: 'rgba(255,255,255,0.15)',
                 borderRadius: '999px',
@@ -597,10 +604,11 @@ export default function StudentDashboard() {
 
             <div className="form-group" style={{ marginTop: '0.5rem' }}>
               <label className="form-label">Link Google Maps / Titik Koordinat Rumah</label>
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <input
                   type="text"
                   className="form-input"
+                  style={{ flex: '1 1 200px' }}
                   value={formData.alamat.googleMapsUrl}
                   onChange={(e) =>
                     setFormData({
@@ -1090,19 +1098,7 @@ export default function StudentDashboard() {
         )}
 
         {/* Action Button Bar */}
-        <div
-          style={{
-            marginTop: '1.75rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            background: 'white',
-            padding: '1.25rem',
-            borderRadius: '16px',
-            border: '1px solid var(--border-color)',
-            boxShadow: 'var(--shadow-sm)',
-          }}
-        >
+        <div className="dashboard-action-bar">
           <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
             Pastikan data yang diisikan jujur dan sesuai dengan kondisi tempat tinggal saat ini.
           </div>

@@ -57,10 +57,10 @@ export default function Register() {
   };
 
   return (
-    <div style={{ minHeight: 'calc(100vh - 4.25rem)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
+    <div style={{ minHeight: 'calc(100vh - 4.25rem)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem 0.875rem' }}>
       <div style={{ width: '100%', maxWidth: '480px' }}>
-        <div className="card" style={{ padding: '2rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
+        <div className="card">
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
             <div
               style={{
                 width: '3.25rem',
@@ -77,10 +77,10 @@ export default function Register() {
             >
               <GraduationCap size={28} />
             </div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a' }}>
+            <h1 style={{ fontSize: '1.375rem', fontWeight: 800, color: '#0f172a' }}>
               Pendaftaran Akun Siswa
             </h1>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+            <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
               Daftarkan diri menggunakan NISN, Nama Lengkap, dan Password
             </p>
           </div>
@@ -173,7 +173,7 @@ export default function Register() {
 
           <div
             style={{
-              marginTop: '1.75rem',
+              marginTop: '1.5rem',
               textAlign: 'center',
               fontSize: '0.875rem',
               color: 'var(--text-muted)',
@@ -194,4 +194,3 @@ export default function Register() {
     </div>
   );
 }
-

@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { GraduationCap, ShieldCheck, LogOut, User, LayoutDashboard, FileText } from 'lucide-react';
+import { GraduationCap, ShieldCheck, LogOut, User, LayoutDashboard, FileText, Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
+    setMobileMenuOpen(false);
     navigate('/login');
+  };
+
+  const closeMenu = () => {
+    setMobileMenuOpen(false);
   };
 
   const isAdminRoute = location.pathname.startsWith('/admin');
@@ -18,7 +24,7 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <div className="container navbar-content">
-        <Link to="/" className="brand-logo">
+        <Link to="/" className="brand-logo" onClick={closeMenu}>
           <div className="brand-icon">
             <GraduationCap size={22} />
           </div>
@@ -30,16 +36,28 @@ export default function Navbar() {
           </div>
         </Link>
 
-        <nav className="nav-actions">
+        {/* Mobile Toggle Button */}
+        <button
+          type="button"
+          className="nav-toggle-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle Navigation"
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        {/* Nav Links & Actions */}
+        <nav className={`nav-actions ${mobileMenuOpen ? 'is-open' : ''}`}>
           {isAuthenticated ? (
             <>
               {isAdmin ? (
                 <>
                   <span className="badge badge-primary">
-                    <ShieldCheck size={14} /> Admin
+                    <ShieldCheck size={14} /> Admin: {user?.nisn || 'Administrator'}
                   </span>
                   <Link
                     to="/admin"
+                    onClick={closeMenu}
                     className={`btn btn-sm ${isAdminRoute ? 'btn-primary' : 'btn-secondary'}`}
                   >
                     <LayoutDashboard size={15} /> Dashboard Admin
@@ -52,16 +70,18 @@ export default function Navbar() {
                   </span>
                   <Link
                     to="/"
+                    onClick={closeMenu}
                     className={`btn btn-sm ${!isAdminRoute ? 'btn-primary' : 'btn-secondary'}`}
                   >
-                    <FileText size={15} /> Data Saya
+                    <FileText size={15} /> Formulir Data Saya
                   </Link>
                   <Link
                     to="/admin"
+                    onClick={closeMenu}
                     className="btn btn-sm btn-secondary"
                     title="Akses halaman admin"
                   >
-                    <ShieldCheck size={15} /> /admin
+                    <ShieldCheck size={15} /> Akses Admin (/admin)
                   </Link>
                 </>
               )}
@@ -72,13 +92,13 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/login" className="btn btn-sm btn-secondary">
+              <Link to="/login" onClick={closeMenu} className="btn btn-sm btn-secondary">
                 Masuk
               </Link>
-              <Link to="/register" className="btn btn-sm btn-primary">
+              <Link to="/register" onClick={closeMenu} className="btn btn-sm btn-primary">
                 Daftar Siswa
               </Link>
-              <Link to="/admin" className="btn btn-sm btn-outline-primary">
+              <Link to="/admin" onClick={closeMenu} className="btn btn-sm btn-outline-primary">
                 <ShieldCheck size={14} /> Portal Admin (/admin)
               </Link>
             </>
@@ -88,4 +108,3 @@ export default function Navbar() {
     </header>
   );
 }
-

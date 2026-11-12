@@ -54,7 +54,7 @@ export default function Login() {
   };
 
   return (
-    <div style={{ minHeight: 'calc(100vh - 4.25rem)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
+    <div style={{ minHeight: 'calc(100vh - 4.25rem)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem 0.875rem' }}>
       <div style={{ width: '100%', maxWidth: '440px' }}>
         {/* Toggle Mode */}
         <div
@@ -63,7 +63,8 @@ export default function Login() {
             background: '#e2e8f0',
             borderRadius: '12px',
             padding: '4px',
-            marginBottom: '1.5rem',
+            marginBottom: '1.25rem',
+            gap: '4px',
           }}
         >
           <button
@@ -71,13 +72,13 @@ export default function Login() {
             onClick={() => switchMode(false)}
             style={{
               flex: 1,
-              padding: '0.625rem',
+              padding: '0.625rem 0.5rem',
               borderRadius: '8px',
               border: 'none',
               background: !isAdminMode ? '#ffffff' : 'transparent',
               color: !isAdminMode ? '#2563eb' : '#64748b',
               fontWeight: 700,
-              fontSize: '0.875rem',
+              fontSize: '0.8125rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -94,13 +95,13 @@ export default function Login() {
             onClick={() => switchMode(true)}
             style={{
               flex: 1,
-              padding: '0.625rem',
+              padding: '0.625rem 0.5rem',
               borderRadius: '8px',
               border: 'none',
               background: isAdminMode ? '#ffffff' : 'transparent',
               color: isAdminMode ? '#2563eb' : '#64748b',
               fontWeight: 700,
-              fontSize: '0.875rem',
+              fontSize: '0.8125rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -110,12 +111,12 @@ export default function Login() {
               transition: 'all 0.2s',
             }}
           >
-            <ShieldCheck size={16} /> Masuk Admin (/admin)
+            <ShieldCheck size={16} /> Admin (/admin)
           </button>
         </div>
 
-        <div className="card" style={{ padding: '2rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
+        <div className="card">
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
             <div
               style={{
                 width: '3.25rem',
@@ -132,10 +133,10 @@ export default function Login() {
             >
               {isAdminMode ? <ShieldCheck size={28} /> : <GraduationCap size={28} />}
             </div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a' }}>
+            <h1 style={{ fontSize: '1.375rem', fontWeight: 800, color: '#0f172a' }}>
               {isAdminMode ? 'Login Administrator' : 'Login Siswa'}
             </h1>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+            <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
               {isAdminMode
                 ? 'Portal admin verifikasi & pemantauan ekonomi siswa'
                 : 'Masuk untuk mengisi kondisi ekonomi & alamat rumah Anda'}
@@ -206,7 +207,7 @@ export default function Login() {
           {!isAdminMode && (
             <div
               style={{
-                marginTop: '1.75rem',
+                marginTop: '1.5rem',
                 textAlign: 'center',
                 fontSize: '0.875rem',
                 color: 'var(--text-muted)',
@@ -228,4 +229,3 @@ export default function Login() {
     </div>
   );
 }
-

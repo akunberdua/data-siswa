@@ -41,7 +41,7 @@ export default function ImageUploader({ value, onChange, label = 'Foto Terbaru R
 
   return (
     <div className="form-group">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
         <label className="form-label" style={{ margin: 0 }}>
           {label} <span style={{ color: 'var(--danger)' }}>*</span>
         </label>
@@ -54,7 +54,7 @@ export default function ImageUploader({ value, onChange, label = 'Foto Terbaru R
 
       {error && (
         <div className="alert alert-danger" style={{ padding: '0.5rem 0.75rem', marginBottom: '0.75rem' }}>
-          <AlertCircle size={15} /> {error}
+          <AlertCircle size={15} style={{ flexShrink: 0 }} /> <div>{error}</div>
         </div>
       )}
 
@@ -65,12 +65,15 @@ export default function ImageUploader({ value, onChange, label = 'Foto Terbaru R
             <div
               style={{
                 position: 'absolute',
-                bottom: '12px',
-                right: '12px',
+                bottom: '10px',
+                right: '10px',
+                left: '10px',
                 display: 'flex',
-                gap: '8px',
-                background: 'rgba(0,0,0,0.6)',
-                padding: '6px 10px',
+                gap: '6px',
+                justifyContent: 'flex-end',
+                flexWrap: 'wrap',
+                background: 'rgba(0,0,0,0.65)',
+                padding: '6px 8px',
                 borderRadius: '8px',
                 backdropFilter: 'blur(4px)',
               }}
@@ -81,7 +84,7 @@ export default function ImageUploader({ value, onChange, label = 'Foto Terbaru R
                 className="btn btn-sm btn-secondary"
                 style={{ padding: '4px 8px', fontSize: '0.75rem' }}
               >
-                <Eye size={14} /> Perbesar
+                <Eye size={13} /> Perbesar
               </button>
               <button
                 type="button"
@@ -89,7 +92,7 @@ export default function ImageUploader({ value, onChange, label = 'Foto Terbaru R
                 className="btn btn-sm btn-primary"
                 style={{ padding: '4px 8px', fontSize: '0.75rem' }}
               >
-                <Upload size={14} /> Ganti
+                <Upload size={13} /> Ganti
               </button>
               <button
                 type="button"
@@ -97,7 +100,7 @@ export default function ImageUploader({ value, onChange, label = 'Foto Terbaru R
                 className="btn btn-sm btn-danger"
                 style={{ padding: '4px 8px', fontSize: '0.75rem' }}
               >
-                <Trash2 size={14} /> Hapus
+                <Trash2 size={13} /> Hapus
               </button>
             </div>
           </div>
@@ -120,8 +123,8 @@ export default function ImageUploader({ value, onChange, label = 'Foto Terbaru R
             <>
               <div
                 style={{
-                  width: '3.5rem',
-                  height: '3.5rem',
+                  width: '3.25rem',
+                  height: '3.25rem',
                   borderRadius: '50%',
                   background: 'var(--primary-light)',
                   color: 'var(--primary)',
@@ -131,7 +134,7 @@ export default function ImageUploader({ value, onChange, label = 'Foto Terbaru R
                   marginBottom: '0.75rem',
                 }}
               >
-                <Camera size={26} />
+                <Camera size={24} />
               </div>
               <div style={{ fontWeight: 700, fontSize: '0.9375rem', marginBottom: '0.25rem' }}>
                 Klik untuk Memilih atau Mengambil Foto Rumah
@@ -188,4 +191,3 @@ export default function ImageUploader({ value, onChange, label = 'Foto Terbaru R
     </div>
   );
 }
-
