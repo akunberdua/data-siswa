@@ -3,7 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
 
-// Load environment variables from server/.env or root .env
+// Load environment variables from server/.env, root .env, or process env
 dotenv.config({ path: path.join(__dirname, '.env') });
 dotenv.config({ path: path.join(__dirname, '../.env') });
 dotenv.config();
@@ -16,9 +16,10 @@ const adminRoutes = require('./routes/admin');
 
 const app = express();
 
-// Middleware
+// CORS Middleware
 app.use(cors({
-  origin: '*',
+  origin: true,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -58,7 +59,15 @@ app.use('/api/admin', adminRoutes);
 
 // 404 handler for unknown routes
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+  res.status(404).json({ message: 'API route not found' });
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled server error:', err);
+  res.status(err.status || 500).json({
+    message: err.message || 'Terjadi kesalahan pada server internal',
+  });
 });
 
 module.exports = app;

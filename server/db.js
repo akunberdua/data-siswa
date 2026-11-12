@@ -1,27 +1,37 @@
 const mongoose = require('mongoose');
 
-let isConnected = false;
+let cachedPromise = null;
 
 async function connectDB() {
-  if (isConnected && mongoose.connection.readyState === 1) {
+  if (mongoose.connection.readyState === 1) {
     return mongoose.connection;
   }
 
-  const uri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb+srv://hasrul0429_db_user:admin123@cluster0.gdmjnoz.mongodb.net/data-siswa?retryWrites=true&w=majority';
+  if (cachedPromise) {
+    return cachedPromise;
+  }
 
-  try {
-    const conn = await mongoose.connect(uri, {
+  const uri =
+    process.env.MONGO_URI ||
+    process.env.MONGODB_URI ||
+    'mongodb+srv://hasrul0429_db_user:admin123@cluster0.gdmjnoz.mongodb.net/data-siswa?retryWrites=true&w=majority';
+
+  cachedPromise = mongoose
+    .connect(uri, {
       bufferCommands: false,
       serverSelectionTimeoutMS: 10000,
+    })
+    .then((conn) => {
+      console.log('MongoDB connected successfully to:', conn.connection.name);
+      return conn.connection;
+    })
+    .catch((err) => {
+      cachedPromise = null;
+      console.error('MongoDB connection error:', err.message);
+      throw err;
     });
-    isConnected = true;
-    console.log('MongoDB connected successfully to:', conn.connection.name);
-    return conn.connection;
-  } catch (error) {
-    console.error('MongoDB connection error:', error.message);
-    throw error;
-  }
+
+  return cachedPromise;
 }
 
 module.exports = connectDB;
-

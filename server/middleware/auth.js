@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'data_siswa_jwt_secret_key_2026_secured';
+const getJwtSecret = () =>
+  process.env.JWT_SECRET || 'data_siswa_jwt_secret_key_2026_secured';
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -10,7 +11,7 @@ function verifyToken(req, res, next) {
 
   const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, getJwtSecret());
     req.user = decoded;
     next();
   } catch (err) {
@@ -33,7 +34,7 @@ function generateToken(user) {
       nama: user.nama,
       role: user.role,
     },
-    JWT_SECRET,
+    getJwtSecret(),
     { expiresIn: '7d' }
   );
 }
@@ -43,4 +44,3 @@ module.exports = {
   requireAdmin,
   generateToken,
 };
-

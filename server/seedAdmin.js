@@ -1,7 +1,11 @@
 const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 
+let isSeeded = false;
+
 async function seedAdmin() {
+  if (isSeeded) return;
+
   try {
     const adminExists = await User.findOne({
       $or: [{ role: 'admin' }, { nisn: 'admin' }],
@@ -19,10 +23,10 @@ async function seedAdmin() {
       });
       console.log('✅ Default admin account created: admin / admin123');
     }
+    isSeeded = true;
   } catch (error) {
     console.error('Seed admin error:', error.message);
   }
 }
 
 module.exports = seedAdmin;
-

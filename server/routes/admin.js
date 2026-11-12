@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const StudentData = require('../models/StudentData');
 const User = require('../models/User');
 const { verifyToken, requireAdmin } = require('../middleware/auth');
@@ -7,6 +8,11 @@ const router = express.Router();
 
 // Middleware: all routes in this router require valid token and admin role
 router.use(verifyToken, requireAdmin);
+
+// Helper function to escape special characters in regular expressions
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
 
 // Get All Students with Filters & Statistics
 router.get('/students', async (req, res) => {
@@ -23,9 +29,10 @@ router.get('/students', async (req, res) => {
 
     const filter = {};
 
-    // Filter Search (Nama, NISN, Jalan, Kecamatan, Kabupaten, Kelas)
+    // Filter Search dengan regex yang aman
     if (search.trim()) {
-      const searchRegex = new RegExp(search.trim(), 'i');
+      const safeSearch = escapeRegex(search.trim());
+      const searchRegex = new RegExp(safeSearch, 'i');
       filter.$or = [
         { nama: searchRegex },
         { nisn: searchRegex },
@@ -117,6 +124,10 @@ router.get('/students', async (req, res) => {
 // Get Single Student Detail
 router.get('/students/:id', async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'ID siswa tidak valid' });
+    }
+
     const student = await StudentData.findById(req.params.id);
     if (!student) {
       return res.status(404).json({ message: 'Data siswa tidak ditemukan' });
@@ -133,6 +144,10 @@ router.get('/students/:id', async (req, res) => {
 // Update Verification Status & Economic Category
 router.put('/students/:id/status', async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'ID siswa tidak valid' });
+    }
+
     const { statusVerifikasi, catatanAdmin, kategoriEkonomi } = req.body;
 
     const student = await StudentData.findById(req.params.id);
@@ -167,6 +182,10 @@ router.put('/students/:id/status', async (req, res) => {
 // Delete Student
 router.delete('/students/:id', async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'ID siswa tidak valid' });
+    }
+
     const student = await StudentData.findById(req.params.id);
     if (!student) {
       return res.status(404).json({ message: 'Data siswa tidak ditemukan' });
@@ -189,4 +208,3 @@ router.delete('/students/:id', async (req, res) => {
 });
 
 module.exports = router;
-

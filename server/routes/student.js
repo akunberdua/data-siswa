@@ -11,8 +11,10 @@ router.get('/profile', verifyToken, async (req, res) => {
     let studentData = await StudentData.findOne({ userId: req.user.id });
 
     if (!studentData) {
-      // Buat data default jika belum ada
       const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ message: 'Data pengguna tidak ditemukan' });
+      }
       studentData = await StudentData.create({
         userId: req.user.id,
         nisn: user.nisn,
@@ -45,17 +47,17 @@ router.put('/profile', verifyToken, async (req, res) => {
     let studentData = await StudentData.findOne({ userId: req.user.id });
 
     if (!studentData) {
+      const user = await User.findById(req.user.id);
       studentData = new StudentData({
         userId: req.user.id,
-        nisn: req.user.nisn,
-        nama: req.user.nama,
+        nisn: user?.nisn || req.user.nisn,
+        nama: user?.nama || req.user.nama,
       });
     }
 
     // Update basic info
-    if (nama) {
+    if (nama && nama.trim()) {
       studentData.nama = nama.trim();
-      // Update juga di model User
       await User.findByIdAndUpdate(req.user.id, { nama: nama.trim() });
     }
     if (jenisKelamin !== undefined) studentData.jenisKelamin = jenisKelamin;
@@ -66,18 +68,18 @@ router.put('/profile', verifyToken, async (req, res) => {
     // Update Alamat
     if (alamat) {
       studentData.alamat = {
-        jalan: alamat.jalan || '',
-        rtRw: alamat.rtRw || '',
-        kelurahan: alamat.kelurahan || '',
-        kecamatan: alamat.kecamatan || '',
-        kabupatenKota: alamat.kabupatenKota || '',
-        provinsi: alamat.provinsi || '',
-        kodePos: alamat.kodePos || '',
-        googleMapsUrl: alamat.googleMapsUrl || '',
+        jalan: alamat.jalan || studentData.alamat?.jalan || '',
+        rtRw: alamat.rtRw || studentData.alamat?.rtRw || '',
+        kelurahan: alamat.kelurahan || studentData.alamat?.kelurahan || '',
+        kecamatan: alamat.kecamatan || studentData.alamat?.kecamatan || '',
+        kabupatenKota: alamat.kabupatenKota || studentData.alamat?.kabupatenKota || '',
+        provinsi: alamat.provinsi || studentData.alamat?.provinsi || '',
+        kodePos: alamat.kodePos || studentData.alamat?.kodePos || '',
+        googleMapsUrl: alamat.googleMapsUrl || studentData.alamat?.googleMapsUrl || '',
       };
     }
 
-    // Update Foto Rumah jika ada perubahan
+    // Update Foto Rumah jika dikirim
     if (fotoRumah !== undefined) {
       studentData.fotoRumah = fotoRumah;
     }
@@ -85,13 +87,13 @@ router.put('/profile', verifyToken, async (req, res) => {
     // Update Kondisi Keluarga
     if (kondisiKeluarga) {
       studentData.kondisiKeluarga = {
-        statusOrangTua: kondisiKeluarga.statusOrangTua || 'Lengkap',
-        namaAyah: kondisiKeluarga.namaAyah || '',
-        pekerjaanAyah: kondisiKeluarga.pekerjaanAyah || '',
-        namaIbu: kondisiKeluarga.namaIbu || '',
-        pekerjaanIbu: kondisiKeluarga.pekerjaanIbu || '',
+        statusOrangTua: kondisiKeluarga.statusOrangTua || studentData.kondisiKeluarga?.statusOrangTua || 'Lengkap',
+        namaAyah: kondisiKeluarga.namaAyah !== undefined ? kondisiKeluarga.namaAyah.trim() : (studentData.kondisiKeluarga?.namaAyah || ''),
+        pekerjaanAyah: kondisiKeluarga.pekerjaanAyah !== undefined ? kondisiKeluarga.pekerjaanAyah.trim() : (studentData.kondisiKeluarga?.pekerjaanAyah || ''),
+        namaIbu: kondisiKeluarga.namaIbu !== undefined ? kondisiKeluarga.namaIbu.trim() : (studentData.kondisiKeluarga?.namaIbu || ''),
+        pekerjaanIbu: kondisiKeluarga.pekerjaanIbu !== undefined ? kondisiKeluarga.pekerjaanIbu.trim() : (studentData.kondisiKeluarga?.pekerjaanIbu || ''),
         jumlahTanggungan: Number(kondisiKeluarga.jumlahTanggungan) || 0,
-        statusAnak: kondisiKeluarga.statusAnak || 'Anak Kandung',
+        statusAnak: kondisiKeluarga.statusAnak || studentData.kondisiKeluarga?.statusAnak || 'Anak Kandung',
       };
     }
 
@@ -99,17 +101,17 @@ router.put('/profile', verifyToken, async (req, res) => {
     if (kondisiEkonomi) {
       studentData.kondisiEkonomi = {
         ...studentData.kondisiEkonomi,
-        penghasilanOrtu: kondisiEkonomi.penghasilanOrtu || '',
-        statusKepemilikanRumah: kondisiEkonomi.statusKepemilikanRumah || '',
-        kondisiDinding: kondisiEkonomi.kondisiDinding || '',
-        kondisiLantai: kondisiEkonomi.kondisiLantai || '',
-        kondisiAtap: kondisiEkonomi.kondisiAtap || '',
-        dayaListrik: kondisiEkonomi.dayaListrik || '',
-        sumberAir: kondisiEkonomi.sumberAir || '',
+        penghasilanOrtu: kondisiEkonomi.penghasilanOrtu || studentData.kondisiEkonomi?.penghasilanOrtu || '',
+        statusKepemilikanRumah: kondisiEkonomi.statusKepemilikanRumah || studentData.kondisiEkonomi?.statusKepemilikanRumah || '',
+        kondisiDinding: kondisiEkonomi.kondisiDinding || studentData.kondisiEkonomi?.kondisiDinding || '',
+        kondisiLantai: kondisiEkonomi.kondisiLantai || studentData.kondisiEkonomi?.kondisiLantai || '',
+        kondisiAtap: kondisiEkonomi.kondisiAtap || studentData.kondisiEkonomi?.kondisiAtap || '',
+        dayaListrik: kondisiEkonomi.dayaListrik || studentData.kondisiEkonomi?.dayaListrik || '',
+        sumberAir: kondisiEkonomi.sumberAir || studentData.kondisiEkonomi?.sumberAir || '',
         penerimaBantuan: Array.isArray(kondisiEkonomi.penerimaBantuan)
           ? kondisiEkonomi.penerimaBantuan
-          : [],
-        catatanTambahan: kondisiEkonomi.catatanTambahan || '',
+          : (studentData.kondisiEkonomi?.penerimaBantuan || []),
+        catatanTambahan: kondisiEkonomi.catatanTambahan !== undefined ? kondisiEkonomi.catatanTambahan.trim() : (studentData.kondisiEkonomi?.catatanTambahan || ''),
       };
 
       // Hitung kategori ekonomi otomatis
@@ -130,4 +132,3 @@ router.put('/profile', verifyToken, async (req, res) => {
 });
 
 module.exports = router;
-
