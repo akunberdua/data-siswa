@@ -131,41 +131,40 @@ const studentDataSchema = new mongoose.Schema(
 // Helper function untuk klasifikasi kategori ekonomi otomatis
 studentDataSchema.methods.calculateEconomicCategory = function () {
   let score = 0;
+  const ke = this.kondisiEkonomi || {};
+  const kk = this.kondisiKeluarga || {};
 
   // Penghasilan Ortu
-  if (this.kondisiEkonomi.penghasilanOrtu === '< Rp 1.000.000') score += 1;
-  else if (this.kondisiEkonomi.penghasilanOrtu === 'Rp 1.000.000 - Rp 2.500.000') score += 2;
-  else if (this.kondisiEkonomi.penghasilanOrtu === 'Rp 2.500.000 - Rp 5.000.000') score += 3;
-  else if (this.kondisiEkonomi.penghasilanOrtu === '> Rp 5.000.000') score += 4;
+  if (ke.penghasilanOrtu === '< Rp 1.000.000') score += 1;
+  else if (ke.penghasilanOrtu === 'Rp 1.000.000 - Rp 2.500.000') score += 2;
+  else if (ke.penghasilanOrtu === 'Rp 2.500.000 - Rp 5.000.000') score += 3;
+  else if (ke.penghasilanOrtu === '> Rp 5.000.000') score += 4;
   else score += 2;
 
   // Status Kepemilikan Rumah
   if (
-    this.kondisiEkonomi.statusKepemilikanRumah === 'Menumpang / Keluarga' ||
-    this.kondisiEkonomi.statusKepemilikanRumah === 'Sewa / Kontrak'
+    ke.statusKepemilikanRumah === 'Menumpang / Keluarga' ||
+    ke.statusKepemilikanRumah === 'Sewa / Kontrak'
   ) {
     score -= 0.5;
   }
 
   // Status Orang Tua
-  if (this.kondisiKeluarga.statusOrangTua === 'Yatim Piatu') score -= 1.5;
+  if (kk.statusOrangTua === 'Yatim Piatu') score -= 1.5;
   else if (
-    this.kondisiKeluarga.statusOrangTua === 'Yatim' ||
-    this.kondisiKeluarga.statusOrangTua === 'Piatu'
+    kk.statusOrangTua === 'Yatim' ||
+    kk.statusOrangTua === 'Piatu'
   ) {
     score -= 0.8;
   }
 
   // Bantuan KIP/PKH
-  if (
-    this.kondisiEkonomi.penerimaBantuan &&
-    this.kondisiEkonomi.penerimaBantuan.length > 0
-  ) {
+  if (ke.penerimaBantuan && ke.penerimaBantuan.length > 0) {
     score -= 0.5;
   }
 
   // Tanggungan banyak
-  if (this.kondisiKeluarga.jumlahTanggungan >= 4) {
+  if (kk.jumlahTanggungan >= 4) {
     score -= 0.5;
   }
 

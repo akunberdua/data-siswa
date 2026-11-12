@@ -92,6 +92,7 @@ export default function App() {
 
               {/* Autentikasi */}
               <Route path="/login" element={<Login />} />
+              <Route path="/admin/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
               {/* Fallback */}
